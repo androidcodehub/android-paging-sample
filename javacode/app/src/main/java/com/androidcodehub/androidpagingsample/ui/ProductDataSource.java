@@ -54,6 +54,9 @@ public class ProductDataSource extends PageKeyedDataSource<Integer, Product> {
     @Override
     public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
 
+
+        loadState.postValue(DataLoadState.LOADING);
+
         Call<ProductResponse> request = walmartApi.getProducts(params.key, params.requestedLoadSize);
 
         Response<ProductResponse> response = null;
@@ -65,6 +68,7 @@ public class ProductDataSource extends PageKeyedDataSource<Integer, Product> {
             }else {
                 callback.onResult(null, params.key - 1);
             }
+            loadState.postValue(DataLoadState.LOADED);
         }catch (IOException ex) {
             //networkState.postValue();
         }
@@ -72,6 +76,9 @@ public class ProductDataSource extends PageKeyedDataSource<Integer, Product> {
 
     @Override
     public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, Product> callback) {
+
+        loadState.postValue(DataLoadState.LOADING);
+
         Call<ProductResponse> request = walmartApi.getProducts(params.key , params.requestedLoadSize);
 
         Response<ProductResponse> response = null;
@@ -82,8 +89,10 @@ public class ProductDataSource extends PageKeyedDataSource<Integer, Product> {
             }else {
                 callback.onResult(null, params.key + 1 );
             }
+            loadState.postValue(DataLoadState.LOADED);
         }catch (IOException ex) {
             //networkState.postValue();
+            loadState.postValue(DataLoadState.FAILED);
         }
     }
 }
