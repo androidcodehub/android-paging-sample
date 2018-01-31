@@ -62,7 +62,7 @@ dependencies {
     annotationProcessor deps.dagger.compiler
     annotationProcessor deps.room.compiler
     annotationProcessor deps.lifecycle.compiler
-    
+
 }
 
 
